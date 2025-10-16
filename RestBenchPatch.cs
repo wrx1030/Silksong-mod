@@ -31,7 +31,7 @@ namespace PluginTutorial
                 if (child.name.Contains("RestBench"))
                 {
                     Debug.Log($"[RestBenchPatch] {parent.name} 已有克隆 {child.name}，跳过重复添加。");
-                    return; // 直接退出，不再生成新的
+                    return;
                 }
             }
 

@@ -1,9 +1,10 @@
-﻿using BepInEx;
-using System;
+﻿using GlobalEnums;
 using System.Collections;
-using TMProOld;
+using System.Collections.Generic;
+using TeamCherry.SharedUtils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 
 namespace DeployBench
 { 
@@ -24,7 +25,7 @@ namespace DeployBench
                 }
             }
 
-            Debug.LogWarning($"[Deploybench] 未找到 benchClone，父对象: {name}");
+            benchClone = null;
         }
 
 
@@ -33,13 +34,11 @@ namespace DeployBench
             
             if (Input.GetKeyDown(deployKey))
             {
-                if (benchClone == null)
-                {
-                    FindBenchClone();
-                }
+                FindBenchClone();
 
                 if (benchClone == null)
                 {
+                    Debug.LogWarning($"[Deploybench] 未找到 benchClone，父对象: {name}");
                     return; 
                 }
 
@@ -96,7 +95,7 @@ namespace DeployBench
                         benchClone.SetActive(true);
                         Debug.Log("激活 benchClone");
 
-                        SceneTeleportMap.AddRespawnPoint(currentSceneName, $"{benchClone.name}|{pos.x},{pos.y}");
+                        SceneTeleportMap.AddRespawnPoint(currentSceneName, benchClone.name);
                         Debug.Log($"[Deploybench] 已在 {currentSceneName} 保存重生点: {benchClone.name}|{pos.x},{pos.y}");
                         UnityEngine.Object.DontDestroyOnLoad(benchClone);
                     }

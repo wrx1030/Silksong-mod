@@ -1,12 +1,9 @@
-﻿using System;
-using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.Logging;
+﻿using BepInEx;
 using HarmonyLib;
 
 namespace PluginTutorial
 {
-	[BepInPlugin("rex.mod.DeployBench", "DeployBench", "0.1")]
+	[BepInPlugin("rex.mod.DeployBench", "DeployBench", "0.9")]
 	public class PluginTutorial : BaseUnityPlugin
 	{
         private Harmony _harmony;

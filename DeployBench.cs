@@ -13,18 +13,6 @@ namespace DeployBench
         private bool isDeploying = false;
         private KeyCode deployKey = KeyCode.B;
 
-        private void Start()
-        {
-            // 使用协程稍微延迟一帧，确保 benchClone 已经被正确克隆并挂载
-            StartCoroutine(FindBenchCloneDelayed());
-        }
-
-        private IEnumerator FindBenchCloneDelayed()
-        {
-            yield return null; // 等待一帧，确保 RestBenchPatch 完成克隆
-            FindBenchClone();
-        }
-
         private void FindBenchClone()
         {
             foreach (Transform child in transform)
@@ -43,8 +31,19 @@ namespace DeployBench
 
         private void Update()
         {
+            
             if (Input.GetKeyDown(deployKey))
             {
+                if (benchClone == null)
+                {
+                    FindBenchClone();
+                }
+
+                if (benchClone == null)
+                {
+                    return; 
+                }
+
                 TryDeployBench();
             }
         }

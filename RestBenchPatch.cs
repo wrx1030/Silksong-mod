@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace PluginTutorial
 {
-    [HarmonyPatch(typeof(HeroBox), "OnTriggerEnter2D", new Type[]{typeof(Collider2D)})]
+    [HarmonyPatch(typeof(PlayMakerTriggerExit2D), "OnTriggerEnter2D", new Type[]{typeof(Collider2D)})]
     public class RestBenchPatch
     {
         [HarmonyPrefix]
-        private static void Prefix(HeroBox __instance, Collider2D otherObject)
+        private static void Prefix(PlayMakerTriggerExit2D __instance, Collider2D other)
         {
             
             if (__instance.GetComponent<Deploybench>() == null)
@@ -19,13 +19,13 @@ namespace PluginTutorial
                 Debug.Log($"[RestBenchPatch] 已向 {__instance.name} 添加 Deploybench");
             }
 
-            var benchcomp = otherObject.GetComponentInParent<RestBench>();
+            var benchcomp = other.GetComponentInParent<RestBench>();
             if (benchcomp == null)
             {
                 return;
             }
 
-            GameObject benchClone = UnityEngine.Object.Instantiate(otherObject.gameObject);
+            GameObject benchClone = UnityEngine.Object.Instantiate(other.gameObject);
             Debug.Log($"[RestBenchPatch] 已克隆 bench 对象: {benchClone.name}");
 
             Transform lightTransform = benchClone.transform.Find("Light");

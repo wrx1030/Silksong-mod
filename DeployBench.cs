@@ -10,7 +10,6 @@ namespace DeployBench
     public class Deploybench : MonoBehaviour
     {
         private GameObject benchClone;
-        private bool isDeploying = false;
         private KeyCode deployKey = KeyCode.B;
 
         private void FindBenchClone()
@@ -49,12 +48,6 @@ namespace DeployBench
         }
         private void TryDeployBench()
         {
-            if (isDeploying)
-            {
-                Debug.Log("[Deploybench] 正在部署中，请稍候...");
-                return;
-            }
-
             if (benchClone == null)
             {
                 Debug.LogWarning("[Deploybench] benchClone 未找到，无法部署。");
@@ -72,58 +65,47 @@ namespace DeployBench
 
         private IEnumerator DeployRoutine()
         {
-            isDeploying = true;
-
-            // 对齐位置到父物体
-            var parent = transform.parent;
-            if (parent != null)
-            {
-                var pos = benchClone.transform.position;
-                pos.x = parent.position.x;
-                pos.y = parent.position.y;
-                benchClone.transform.position = pos;
-            }
-
-            yield return null;
-
+            
             if (benchClone != null)
             {
-                benchClone.transform.SetParent(null);
-
                 string currentSceneName = GameManager.instance.sceneName;
-                if (!string.IsNullOrEmpty(currentSceneName))
+                // 根据名称获取场景对象
+                Scene targetScene = SceneManager.GetSceneByName(currentSceneName);
+
+                // 验证场景是否有效（已加载且合法）
+                if (targetScene.IsValid())
                 {
-                    // 根据名称获取场景对象
-                    Scene targetScene = SceneManager.GetSceneByName(currentSceneName);
-
-                    // 验证场景是否有效（已加载且合法）
-                    if (targetScene.IsValid())
+                    // 检查长椅是否需要移动到新场景
+                    if (benchClone.scene != targetScene)
                     {
-                        // 检查长椅是否需要移动到新场景
-                        if (benchClone.scene != targetScene)
-                        {
-                            // 将长椅移动到目标场景
-                            SceneManager.MoveGameObjectToScene(benchClone, targetScene);
-                            Debug.Log($"[Deploybench] 已将 {benchClone.name} 移动到正确的游戏场景: {targetScene.name}");
+                        benchClone.transform.SetParent(null);
 
-                            SceneTeleportMap.AddRespawnPoint(currentSceneName, benchClone.name);
+                        // 将长椅移动到目标场景
+                        SceneManager.MoveGameObjectToScene(benchClone, targetScene);
+                        Debug.Log($"[Deploybench] 已将 {benchClone.name} 移动到正确的游戏场景: {targetScene.name}");
 
-                            Debug.Log($"[Deploybench] 已在 {currentSceneName} 保存重生点: {benchClone.name}");
-                            UnityEngine.Object.DontDestroyOnLoad(benchClone);
-                            // 激活 benchClone
-                            benchClone.SetActive(true);
-                            
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[Deploybench] 无法根据名称 '{currentSceneName}' 找到已加载的场景。长椅可能位于错误的场景。");
+
+                        // 对齐位置到父物体
+                        var heroPos = this.transform.position;
+                        var pos = benchClone.transform.position;
+                        pos.x = heroPos.x;
+                        pos.y = heroPos.y - 1.0f;
+                        benchClone.transform.position = pos;
+                        Debug.Log($"[Deploybench] 已将 {benchClone.name} 对齐到位置: {pos.x},{pos.y}");
+
+                        benchClone.SetActive(true);
+                        Debug.Log("激活 benchClone");
+
+                        SceneTeleportMap.AddRespawnPoint(currentSceneName, $"{benchClone.name}|{pos.x},{pos.y}");
+                        Debug.Log($"[Deploybench] 已在 {currentSceneName} 保存重生点: {benchClone.name}|{pos.x},{pos.y}");
+                        UnityEngine.Object.DontDestroyOnLoad(benchClone);
                     }
                 }
                 else
                 {
-                    Debug.LogError("[Deploybench] 无法从 GameManager 获取当前场景名称！");
+                    Debug.LogWarning($"[Deploybench] 无法根据名称 '{currentSceneName}' 找到已加载的场景。长椅可能位于错误的场景。");
                 }
+                
 
                 Debug.Log($"[Deploybench] 已部署 benchClone: {benchClone.name}");
             }
@@ -135,8 +117,6 @@ namespace DeployBench
 
             // 添加冷却时间
             yield return new WaitForSeconds(0.5f);
-
-            isDeploying = false;
         }
     }
 }

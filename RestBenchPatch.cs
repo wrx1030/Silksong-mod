@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PluginTutorial
 {
-    [HarmonyPatch(typeof(PlayMakerTriggerExit2D), "OnTriggerEnter2D", new Type[]{typeof(Collider2D)})]
+    [HarmonyPatch(typeof(PlayMakerTriggerExit2D), "OnTriggerExit2D", new Type[]{typeof(Collider2D)})]
     public class RestBenchPatch
     {
         [HarmonyPrefix]
@@ -23,6 +23,16 @@ namespace PluginTutorial
             if (benchcomp == null)
             {
                 return;
+            }
+
+            Transform parent = __instance.transform;
+            foreach (Transform child in parent)
+            {
+                if (child.name.Contains("RestBench"))
+                {
+                    Debug.Log($"[RestBenchPatch] {parent.name} 已有克隆 {child.name}，跳过重复添加。");
+                    return; // 直接退出，不再生成新的
+                }
             }
 
             GameObject benchClone = UnityEngine.Object.Instantiate(other.gameObject);

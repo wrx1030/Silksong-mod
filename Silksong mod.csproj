@@ -73,7 +73,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HarmonyPatchValidator.cs" />
     <Compile Include="PluginTutorial.cs" />
     <Compile Include="RestBenchPatch.cs" />
     <Compile Include="DeployBench.cs" />

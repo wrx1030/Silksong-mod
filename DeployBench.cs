@@ -31,6 +31,7 @@ namespace DeployBench
             {
                 FindBenchClone();
 
+
                 if (benchClone == null)
                 {
                     Debug.LogWarning($"[Deploybench] 未找到 benchClone，父对象: {name}");

@@ -60,7 +60,7 @@ namespace PluginTutorial
             Debug.Log($"[Deploybench] 已将 {benchClone.name} 对齐到位置: {pos.x},{pos.y}");
 
             benchClone.SetActive(true);
-            Debug.Log("激活 benchClone");
+            Debug.Log("[Deploybench] 激活 benchClone");
 
             SceneTeleportMap.AddRespawnPoint(currentSceneName, benchClone.name);
             Debug.Log($"[Deploybench] 已在 {currentSceneName} 保存重生点: {benchClone.name}|{pos.x},{pos.y}");

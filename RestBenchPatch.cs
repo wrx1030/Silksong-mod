@@ -18,27 +18,18 @@ namespace PluginTutorial
                 Debug.Log($"已向 {__instance.name} 添加 Deploybench");
             }
 
-            if(benchCloneSingleton.Instance != null)
-            {
-                Debug.Log("[RestBenchPatch] benchCloneSingleton 实例已存在，跳过创建新的克隆。");
-                return;
-            }
-
             var benchcomp = other.GetComponent<RestBench>();
             if (benchcomp == null)
             {
                 return;
             }
 
-            Transform parent = __instance.transform;
-            foreach (Transform child in parent)
+            if (benchCloneSingleton.Instance != null)
             {
-                if (child.name.Contains("RestBench"))
-                {
-                    Debug.Log($"[RestBenchPatch] {parent.name} 已有克隆 {child.name}，跳过重复添加。");
-                    return;
-                }
+                Debug.Log("[RestBenchPatch] benchCloneSingleton 实例已存在，跳过创建新的克隆。");
+                return;
             }
+
 
             if (__instance.GetComponent<Deploybench>() && __instance.GetComponent<HeroController>())
             {

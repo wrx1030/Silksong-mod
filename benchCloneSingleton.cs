@@ -18,9 +18,6 @@ namespace PluginTutorial
             else if (Instance != this)
             {
                 Destroy(gameObject);
-                Instance = this;               
-                DontDestroyOnLoad(gameObject);
-                Debug.Log("[benchCloneSingleton] 检测到重复实例，替换旧的单例");
             }
         }
     }

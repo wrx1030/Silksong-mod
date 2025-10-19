@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace DeployBench
+namespace PluginTutorial
 { 
     public class Deploybench : MonoBehaviour
     {
@@ -10,17 +10,15 @@ namespace DeployBench
 
         private void FindBenchClone()
         {
-            foreach (Transform child in transform)
+            if (benchCloneSingleton.Instance != null)
             {
-                if (!child.gameObject.activeSelf && child.name.Contains("RestBench"))
-                {
-                    benchClone = child.gameObject;
-                    Debug.Log($"[Deploybench] 找到 benchClone: {benchClone.name}");
-                    return;
-                }
+                benchClone = benchCloneSingleton.Instance.gameObject;
+                Debug.Log($"[Deploybench] 从单例获取 benchClone: {benchClone.name}");
             }
-
-            benchClone = null;
+            else
+            {
+                benchClone = null;
+            }
         }
 
 
@@ -44,11 +42,6 @@ namespace DeployBench
 
         private void TryDeployBench()
         {
-            if (benchClone.activeSelf)
-            {
-                //string currentSceneName = GameManager.instance.sceneName;
-            }
-
             StartCoroutine(DeployRoutine());
         }
 

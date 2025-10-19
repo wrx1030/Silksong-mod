@@ -1,5 +1,4 @@
-﻿using DeployBench;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -17,6 +16,12 @@ namespace PluginTutorial
             {
                 __instance.gameObject.AddComponent<Deploybench>();
                 Debug.Log($"已向 {__instance.name} 添加 Deploybench");
+            }
+
+            if(benchCloneSingleton.Instance != null)
+            {
+                Debug.Log("[RestBenchPatch] benchCloneSingleton 实例已存在，跳过创建新的克隆。");
+                return;
             }
 
             var benchcomp = other.GetComponent<RestBench>();
@@ -77,6 +82,12 @@ namespace PluginTutorial
                 }
 
                 benchClone.transform.SetParent(__instance.gameObject.transform, false);
+
+                if (benchClone.GetComponent<benchCloneSingleton>() == null)
+                {
+                    benchClone.AddComponent<benchCloneSingleton>();
+                }
+
                 benchClone.SetActive(false);
                 Debug.Log($"[RestBenchPatch] 已将 benchClone 设为 {__instance.name} 的子物体并隐藏");
 
